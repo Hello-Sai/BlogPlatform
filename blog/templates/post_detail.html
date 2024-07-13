@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css" integrity="sha384-BY+fdrpOd3gfeRvTSMT+VUZmA728cfF9Z2G42xpaRkUGu2i3DyzpTURDo5A6CaLK" crossorigin="anonymous">
+  <title>Home</title>
+  <style>
+    body{
+        background-color: #f9f9f9;
+    }
+    #submitButton {
+      display: none; /* Hide the Submit button initially */
+  }
+  #close:hover{
+    background-color: #f9f9f9;
+    border-radius: 20%;
+    
+  }
+  /* custom.css */
+/* custom.css */
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+.card-text, .comment-content {
+    font-size: 1.1rem;
+}
+
+.comment-user {
+    font-size: 0.9rem;
+    color: #888;
+    float: right;
+}
+.comments > *{
+    border:1px solid #ddd;
+    padding: 15px 5px;
+    border-radius: 10px;
+
+}
+
+
+hr {
+    border-top: 1px solid #ddd;
+}
+
+.comment-form {
+    align-items: center;
+}
+
+.comment-form input {
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    box-shadow: none;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.comment-form input:focus {
+    border-color: #007bff;
+}
+
+.comment-form button {
+    border-radius: 50%;
+    padding: 0.5rem;
+    background-color: #007bff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.comment-form button svg {
+    width: 20px;
+    height: 20px;
+}
+ 
+  </style>
+</head>
+<body>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="messages">
+        <h2 class=" alert alert-{{message.tags}}">{{message}}
+            <a style="bottom:5px;position:relative;cursor: pointer;float:right;" id="close">x</a>
+        </h2>
+        </div> 
+    {% endfor %}
+  {% endif %}
+<div class="m-3">
+  <a class="btn btn-outline-primary" href="../">Go Back</a>
+</div>
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="card-title">{{ post.title }}</h3>
+                <div class="d-flex justify-content-start pr-2">
+                <span  class="card-text ">{{ post.content }}</span>
+                </div>
+                <div class="d-flex justify-content-end pr-2">
+                <span  class="card-text text-secondary">{{ post.author.username }} ,</span><br>
+                <span  class="card-text text-secondary"> &nbsp;{{ post.published_date }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Comments</h4>
+                {% for comment in post.comments.all %}
+                    <div class="comments mb-3">
+                        <div class="pb-2 px-3">
+                        <span class=" comment-content">{{ comment.content }}</span>
+                        <span class="mr-3 mt-1 comment-user text-secondary">{{ comment.created_date }}</span>
+                        <span class="mr-3 mt-1 comment-user text-secondary">{{ comment.author.username }} ,</span>
+                    </div>
+                    </div>
+                    <!-- {% if not forloop.last %}
+                        <hr>
+                    {% endif %} -->
+                {% endfor %}
+                
+                <form method="post" action="{% url 'add_comment' post.slug %}" class="comment-form d-flex mt-4">
+                    {% csrf_token %}
+                    <input type="text" name="content" class="form-control me-2" placeholder="Add a comment..." required>
+                    <button type="submit" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+                            <path d="M15.5.5a.5.5 0 0 0-.5.5v2.785L2.522 8.27l-.364-.36A.5.5 0 0 0 1.8 8h-.007L.498 8.788 7.8 13l-.618 3.497a.5.5 0 0 0 .79.407L15.5 1a.5.5 0 0 0-.036-.5z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('close').addEventListener('click', function () {
+        // Remove the error messages when focusing on the firstname input
+        var messagesContainer = document.querySelector('.messages');
+        if (messagesContainer) {
+            messagesContainer.innerHTML = '';
+        }
+    });
+</script>
+
+</body>
+</html>
